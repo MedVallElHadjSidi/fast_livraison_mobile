@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1028398623935",
+    "project_id": "fasttossel-db55d",
+    "storage_bucket": "fasttossel-db55d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028398623935:android:1599995f6550b7ef012a0a",
+        "android_client_info": {
+          "package_name": "com.example.fast_livraison_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-OZf9AnOlXxwgvHQsTc7lPAi3uOAQz-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
