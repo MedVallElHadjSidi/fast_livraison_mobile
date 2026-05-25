@@ -12,7 +12,12 @@
           "package_name": "com.example.fast_livraison_mobile"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1028398623935-1il9pgsk4hituur6tejmth87ase5p47d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB-OZf9AnOlXxwgvHQsTc7lPAi3uOAQz-Y"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028398623935-1il9pgsk4hituur6tejmth87ase5p47d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
