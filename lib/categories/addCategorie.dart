@@ -21,6 +21,7 @@ class _AddCategorieState extends State<AddCategorie> {
   CollectionReference categories = FirebaseFirestore.instance.collection(
     'categories',
   );
+  
 
   Future<void> addCategorie() {
     // Call the user's CollectionReference to add a new user
@@ -42,6 +43,12 @@ class _AddCategorieState extends State<AddCategorie> {
     setState(() {});});
   }
 
+@override
+  void dispose() {
+    // TODO: implement dispose
+    mycontroller.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -18,6 +18,17 @@ class _SignupState extends State<Signup> {
   TextEditingController myUsernamecontroller = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isloading = false;
+@override
+  void dispose() {
+    // TODO: implement dispose
+    myEmailcontroller.dispose();
+    myPasswordcontroller.dispose();
+    myUsernamecontroller.dispose();
+    
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

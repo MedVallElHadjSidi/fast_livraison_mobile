@@ -32,7 +32,12 @@ class _EditCategorieState extends State<EditCategorie> {
   }
   
 
-
+@override
+  void dispose() {
+    // TODO: implement dispose
+    mycontroller.dispose();
+    super.dispose();
+  }
    edittCategorie() {
     // Call the user's CollectionReference to add a new user
     isLoading=true;

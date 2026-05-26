@@ -50,6 +50,13 @@ class _loginState extends State<login> {
 
     super.initState();
   }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    myPasswordcontroller.dispose();
+    myEmailcontroller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
