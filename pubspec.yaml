@@ -76,6 +76,8 @@ flutter:
     - images/fast_tossel.png
     - images/google_logo.png
     - images/logo_google.png
+    - images/folder.jpg
+    - images/fast_tossel_animated.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

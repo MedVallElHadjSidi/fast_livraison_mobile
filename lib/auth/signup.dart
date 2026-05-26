@@ -1,4 +1,5 @@
 import 'package:fast_livraison_mobile/components/CustomBoutton.dart';
+import 'package:fast_livraison_mobile/components/CustomLoading.dart';
 import 'package:fast_livraison_mobile/components/CustomTextFormField.dart';
 import 'package:fast_livraison_mobile/components/customLogoAuth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,10 +17,11 @@ class _SignupState extends State<Signup> {
   TextEditingController myPasswordcontroller = TextEditingController();
   TextEditingController myUsernamecontroller = TextEditingController();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isloading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: isloading ? CustomLoading() : Container(
         padding: EdgeInsets.all(25),
         child: ListView(
           physics:
@@ -119,7 +121,10 @@ class _SignupState extends State<Signup> {
               onPressed: () async {
                 // 1. Fermer le clavier
                 FocusScope.of(context).unfocus();
-                await Future.delayed(Duration(milliseconds: 150));
+                isloading = true;
+                setState(() {});
+                // await Future.delayed(Duration(milliseconds: 150));
+      
 
                 // 2. Valider les champs
                 // if (myUsernamecontroller.text.isEmpty ||
@@ -146,6 +151,8 @@ class _SignupState extends State<Signup> {
                     );
 
                     credential.user?.sendEmailVerification();
+                              isloading = false;
+                setState(() {});
                     Navigator.of(context).pushReplacementNamed("login");
                   } on FirebaseAuthException catch (e) {
                     String message = "Une erreur est survenue";
@@ -162,6 +169,8 @@ class _SignupState extends State<Signup> {
                         backgroundColor: Colors.red,
                       ),
                     );
+                                   isloading = false;
+                setState(() {});
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -169,6 +178,8 @@ class _SignupState extends State<Signup> {
                         backgroundColor: Colors.red,
                       ),
                     );
+                                   isloading = false;
+                setState(() {});
                   }
                 }
               },

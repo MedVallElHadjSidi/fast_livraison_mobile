@@ -1,6 +1,7 @@
 import 'package:fast_livraison_mobile/HomePage.dart';
 import 'package:fast_livraison_mobile/auth/login.dart';
 import 'package:fast_livraison_mobile/auth/signup.dart';
+import 'package:fast_livraison_mobile/categories/addCategorie.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:fast_livraison_mobile/geolocations/Mygeo.dart';
 import 'package:flutter/material.dart';
@@ -47,13 +48,26 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        appBarTheme: AppBarTheme(
+          iconTheme: IconThemeData(
+            color: Colors.orange,
+          ),
+          backgroundColor: Colors.grey[50],
+          titleTextStyle: TextStyle(
+            color: Colors.orange,
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+
+          ),
+
+        )
       ),
       home: (FirebaseAuth.instance.currentUser !=null  && FirebaseAuth.instance.currentUser !.emailVerified  ) ? Homepage(): login(),
       routes: {
         "singup": (context) => Signup(),
         "home": (context) => Homepage(),
         "login": (context) => login(),
+        "add-categorie": (context) => AddCategorie(),
         // "geo": (context) => Mygeo(),
       },
     );
