@@ -53,7 +53,7 @@ getDataCategories() async{
               await FirebaseAuth.instance.signOut();
               Navigator.pushNamedAndRemoveUntil(
                 context,
-                "login",
+                "login-phone",
                 (route) => false,
               );
             },

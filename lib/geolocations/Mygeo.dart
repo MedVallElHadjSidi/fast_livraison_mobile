@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -20,7 +21,7 @@ class _MyGeoState extends State<MyGeo> {
 
   CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(18.0718016, -15.9557083),
-    zoom: 40,
+    zoom: 100.4746,
   );
   List<Marker> _markers = [];
   getCurrentLocationApp() async {
@@ -46,64 +47,64 @@ class _MyGeoState extends State<MyGeo> {
         // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
       }
-          if (permission == LocationPermission.whileInUse) {
-      //Ce code configure comment le GPS va fonctionner dans ton application.
-      // final LocationSettings locationSettings = LocationSettings(
-      //   accuracy: LocationAccuracy.high,
-      //   distanceFilter: 100,
-      // );
+      if (permission == LocationPermission.whileInUse) {
+        //Ce code configure comment le GPS va fonctionner dans ton application.
+        // final LocationSettings locationSettings = LocationSettings(
+        //   accuracy: LocationAccuracy.high,
+        //   distanceFilter: 100,
+        // );
 
-      // Position position = await Geolocator.getCurrentPosition(
-      //   locationSettings: locationSettings,
-      // );
-      Position position = await Geolocator.getCurrentPosition();
-      print("------debut--------");
-      // print(position.altitude);
-      print(position.latitude);
-      print(position.longitude);
-      print("--------fin------");
-
-      print(permission);
-
-      _kGooglePlex = CameraPosition(
-        target: LatLng(position.latitude, position.longitude),
-        zoom: 40.4746,
-      );
-      setState(() {});
-
-      positionStream = Geolocator.getPositionStream().listen((
-        Position? position,
-      ) {
+        // Position position = await Geolocator.getCurrentPosition(
+        //   locationSettings: locationSettings,
+        // );
+        Position position = await Geolocator.getCurrentPosition();
         print("------debut--------");
-        print(position!.latitude);
+        // print(position.altitude);
+        print(position.latitude);
         print(position.longitude);
         print("--------fin------");
 
-        print("---------------------");
-        double distanceInMeters = Geolocator.distanceBetween(
-          position.latitude,
-          position.longitude,
-          36.8065,
-          10.1815,
-        );
-        print("Distance in meters: $distanceInMeters");
-        _markers.add(
-          Marker(
-            markerId: MarkerId("1"),
-            position: LatLng(position.latitude, position.longitude),
-          ),
-        );
-        gmc!.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(position.latitude, position.longitude),
-              zoom: 40.4746,
-            ),
-          ),
+        print(permission);
+
+        _kGooglePlex = CameraPosition(
+          target: LatLng(position.latitude, position.longitude),
+          zoom: 40.4746,
         );
         setState(() {});
-      });
-    }
+
+        positionStream = Geolocator.getPositionStream().listen((
+          Position? position,
+        ) {
+          print("------debut--------");
+          print(position!.latitude);
+          print(position.longitude);
+          print("--------fin------");
+
+          print("---------------------");
+          double distanceInMeters = Geolocator.distanceBetween(
+            position.latitude,
+            position.longitude,
+            36.8065,
+            10.1815,
+          );
+          print("Distance in meters: $distanceInMeters");
+          _markers.add(
+            Marker(
+              markerId: MarkerId("1"),
+              position: LatLng(position.latitude, position.longitude),
+            ),
+          );
+          gmc!.animateCamera(
+            CameraUpdate.newCameraPosition(
+              CameraPosition(
+                target: LatLng(position.latitude, position.longitude),
+                zoom: 40.4746,
+              ),
+            ),
+          );
+          setState(() {});
+        });
+      }
 
       if (permission == LocationPermission.deniedForever) {
         // Permissions are denied forever, handle appropriately.
@@ -112,8 +113,6 @@ class _MyGeoState extends State<MyGeo> {
         );
       }
     }
-
-
   }
 
   initState() {
@@ -130,27 +129,56 @@ class _MyGeoState extends State<MyGeo> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Expanded(
-            child: GoogleMap(
-              mapType: MapType.normal,
-              markers: _markers.toSet(),
-              onTap: (LatLng latlng) => {
-                print(latlng.latitude),
-                print(latlng.longitude),
-                // _markers.add(Marker(markerId: MarkerId("2"), position: argument)),
-                // _markers.add(Marker(markerId: MarkerId("1"), position: LatLng(latlng.latitude, latlng.longitude))),
-                // setState(() {})
-              },
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("FAST"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                "login-phone",
+                (route) => false,
+              );
+            },
+            icon: Icon(Icons.logout),
           ),
         ],
+      ),
+
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            child: Column(
+              children: [
+                Expanded(
+                  child: GoogleMap(
+                    mapType: MapType.normal,
+                    markers: _markers.toSet(),
+                    onTap: (LatLng latlng) => {
+                      print(latlng.latitude),
+                      print(latlng.longitude),
+                      // _markers.add(Marker(markerId: MarkerId("2"), position: argument)),
+                      _markers.add(
+                        Marker(
+                          markerId: MarkerId("1"),
+                          position: LatLng(latlng.latitude, latlng.longitude),
+                        ),
+                      ),
+                      setState(() {}),
+                    },
+                    initialCameraPosition: _kGooglePlex,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

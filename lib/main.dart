@@ -1,12 +1,18 @@
 import 'package:fast_livraison_mobile/HomePage.dart';
 import 'package:fast_livraison_mobile/auth/login.dart';
+import 'package:fast_livraison_mobile/auth/loginPhone.dart';
 import 'package:fast_livraison_mobile/auth/signup.dart';
 import 'package:fast_livraison_mobile/categories/addCategorie.dart';
+import 'package:fast_livraison_mobile/geolocations/Mygeo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:fast_livraison_mobile/geolocations/Mygeo.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'services/auth_service.dart';
+import 'package:fast_livraison_mobile/home_screen.dart';
+
 
 void main() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +21,13 @@ void main() async {
     await GoogleSignIn.instance.initialize(
   serverClientId: "1028398623935-1il9pgsk4hituur6tejmth87ase5p47d.apps.googleusercontent.com",
     );
-  runApp(const MyApp());
+  runApp(
+    // ✅ Provider ici, AVANT tout le reste
+    ChangeNotifierProvider(
+      create: (_) => AuthService(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -62,11 +74,20 @@ class _MyAppState extends State<MyApp> {
 
         )
       ),
-      home: (FirebaseAuth.instance.currentUser !=null  && FirebaseAuth.instance.currentUser !.emailVerified  ) ? Homepage(): login(),
+      // home: (FirebaseAuth.instance.currentUser !=null    ) ? Homepage(): LoginPhone(),
+      home:  Consumer<AuthService>(
+        builder: (context, authService, _) {
+          if (authService.isLoggedIn) {
+            return const MyGeo();
+          }
+          return const LoginPhone();
+        },
+      ),
       routes: {
         "singup": (context) => Signup(),
         "home": (context) => Homepage(),
         "login": (context) => login(),
+        "login-phone": (context) => LoginPhone(),
         "add-categorie": (context) => AddCategorie(),
         // "geo": (context) => Mygeo(),
       },
