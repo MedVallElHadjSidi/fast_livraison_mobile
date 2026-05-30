@@ -2,25 +2,27 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_livraison_mobile/categories/editCategories.dart';
 import 'package:fast_livraison_mobile/components/CustomLoading.dart';
-import 'package:fast_livraison_mobile/notes/viewNote.dart';
+import 'package:fast_livraison_mobile/notes/addNote.dart';
+import 'package:fast_livraison_mobile/notes/editNote.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+class ViewNote extends StatefulWidget {
+  final String? categorieId;
+  const ViewNote({super.key, required this.categorieId});
 
   @override
-  State<Homepage> createState() => _HomepageState();
+  State<ViewNote> createState() => _ViewNoteState();
 }
 
-class _HomepageState extends State<Homepage> {
-List<QueryDocumentSnapshot> categories=[];
+class _ViewNoteState extends State<ViewNote> {
+List<QueryDocumentSnapshot> notes=[];
 bool isLoading=true;
 
-getDataCategories() async{
-  QuerySnapshot querySnapshot=  await FirebaseFirestore.instance.collection("categories").where('userid', isEqualTo:  FirebaseAuth.instance.currentUser!.uid).get();
+getDataNotes() async{
+  QuerySnapshot querySnapshot=  await FirebaseFirestore.instance.collection("categories").doc(widget.categorieId).collection("note").get();
      isLoading=false;
-  categories.addAll(querySnapshot.docs);
+  notes.addAll(querySnapshot.docs);
 
 
   setState(() {
@@ -31,7 +33,7 @@ getDataCategories() async{
 @override
   void initState() {
     // TODO: implement initState
-    getDataCategories();
+    getDataNotes();
     super.initState();
   }
   @override
@@ -41,7 +43,8 @@ getDataCategories() async{
     
         backgroundColor: Colors.orange,
         onPressed: (){
-          Navigator.of(context).pushNamed("add-categorie");
+          // Navigator.of(context).pushNamed("add-categorie");
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AddNote(docid: widget.categorieId,)));
         },
       child: Icon(Icons.add, color: Colors.white,),
       
@@ -64,43 +67,52 @@ getDataCategories() async{
         
       ),
 
-      body: isLoading ? CustomLoading() : GridView.builder(
-        itemCount: categories.length,
+      body: WillPopScope(
+        onWillPop: () async {
+          Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
+          return false;
+        },
+        child: isLoading ? CustomLoading() : GridView.builder(
+        itemCount: notes.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisExtent: 200,
         ),
         itemBuilder:(context,item){
             return   InkWell(
-              onTap: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ViewNote(categorieId: categories[item].id,)));
-              },
               onLongPress: (){
-                    AwesomeDialog(
+                      AwesomeDialog(
                         context: context,
                         dialogType: DialogType.warning,
                         animType: AnimType.rightSlide,
                         title: 'Suppression',
                         desc: 'Vous etes sur a supprimer ce categories?.',
-                        btnCancelText: "No",
-                        btnOkText: "Edit",
+
                         btnCancelOnPress: (){},
                         btnOkOnPress: () async {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>EditCategorie(docsId: categories[item].id,oldName: categories[item]['name'],)));
+                              FirebaseFirestore.instance.collection("categories")
+  .doc(widget.categorieId).collection("note").doc(notes[item].id).delete();
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ViewNote(categorieId: widget.categorieId,)));
 
                           // await FirebaseFirestore.instance.collection("categories").doc(categories[item].id).delete();
                           // Navigator.of(context).pushNamedAndRemoveUntil("home", (route) => false);
                         }
                       ).show();
-
-
+              },
+              onTap:(){
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>EditNote(
+                  docid: notes[item].id,
+                  categorieId: widget.categorieId,
+                  valueNote: notes[item]['note']
+                )));
+                
               },
               child: Card(
               child: Container(
                 child: Column(
                   children: [
-                    Image.asset("images/folder.jpg", height: 100),
-                    Text('${categories[item]['name']}'),
+                    // Image.asset("images/folder.jpg", height: 100),
+                    Text('${notes[item]['note']}'),
                   ],
                 ),
               ),
@@ -111,6 +123,8 @@ getDataCategories() async{
       
          
         ,
+      
+        ),
       ),
     );
   }

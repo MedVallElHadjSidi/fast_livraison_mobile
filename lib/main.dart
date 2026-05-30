@@ -3,6 +3,7 @@ import 'package:fast_livraison_mobile/auth/login.dart';
 import 'package:fast_livraison_mobile/auth/loginPhone.dart';
 import 'package:fast_livraison_mobile/auth/signup.dart';
 import 'package:fast_livraison_mobile/categories/addCategorie.dart';
+import 'package:fast_livraison_mobile/filterFireStore.dart';
 import 'package:fast_livraison_mobile/geolocations/Mygeo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:fast_livraison_mobile/geolocations/Mygeo.dart';
@@ -13,20 +14,16 @@ import 'package:provider/provider.dart';
 import 'services/auth_service.dart';
 import 'package:fast_livraison_mobile/home_screen.dart';
 
-
 void main() async {
-    WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await GoogleSignIn.instance.initialize(
+    serverClientId:
+        "1028398623935-1il9pgsk4hituur6tejmth87ase5p47d.apps.googleusercontent.com",
   );
-    await GoogleSignIn.instance.initialize(
-  serverClientId: "1028398623935-1il9pgsk4hituur6tejmth87ase5p47d.apps.googleusercontent.com",
-    );
   runApp(
     // ✅ Provider ici, AVANT tout le reste
-    ChangeNotifierProvider(
-      create: (_) => AuthService(),
-      child: const MyApp(),
-    ),
+    ChangeNotifierProvider(create: (_) => AuthService(), child: const MyApp()),
   );
 }
 
@@ -43,42 +40,36 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     // TODO: implement initState
-    FirebaseAuth.instance
-  .authStateChanges()
-  .listen((User? user) {
-    if (user == null) {
-      print('User is currently signed out!');
-    } else {
-      print('User is signed in!');
-    }
-  });
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+      }
+    });
     super.initState();
-
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          iconTheme: IconThemeData(
-            color: Colors.orange,
-          ),
+          iconTheme: IconThemeData(color: Colors.orange),
           backgroundColor: Colors.grey[50],
           titleTextStyle: TextStyle(
             color: Colors.orange,
             fontSize: 17,
             fontWeight: FontWeight.bold,
-
           ),
-
-        )
+        ),
       ),
       // home: (FirebaseAuth.instance.currentUser !=null    ) ? Homepage(): LoginPhone(),
-      home:  Consumer<AuthService>(
+      home: Consumer<AuthService>(
         builder: (context, authService, _) {
           if (authService.isLoggedIn) {
-            return const MyGeo();
+            return const FilterFireStore();
           }
           return const LoginPhone();
         },
@@ -94,7 +85,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-
-
-

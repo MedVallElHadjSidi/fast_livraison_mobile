@@ -12,7 +12,7 @@ const double RATE_CLASSIC = 15.0;
 const double RATE_PREMIER = 25.0;
 
 // ─── Clé API Google (même clé que google_maps_flutter) ────────────────────────
-const String _kApiKey = 'AIzaSyB-OZf9AnOlXxwgvHQsTc7lPAi3uOAQz-Y';
+const String _kApiKey = 'AIzaSyALKHw2yxrsMaMwquheHpvaqWlj6G5zWX4';
 
 class MyGeo extends StatefulWidget {
   const MyGeo({super.key});
